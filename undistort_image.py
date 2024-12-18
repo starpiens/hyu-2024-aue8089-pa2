@@ -32,7 +32,7 @@ def undistort_image(img: np.ndarray,
             u1 = math.floor(u)
             v1 = math.floor(v)
 
-            in_image = (u1 >= 0) & (u1+1 < width) & (v1 >= 0) & (v1+1 < height)
+            in_image = (u1 >= 0) & (u1 + 1 < width) & (v1 >= 0) & (v1 + 1 < height)
             if not in_image:
                 continue
 
@@ -41,9 +41,14 @@ def undistort_image(img: np.ndarray,
                 b = v - v1
 
                 # [TODO] weighted sum of pixel values in img
-
+                undistorted_img[y, x] = (
+                    (1 - a) * (1 - b) * img[v1, u1]
+                    + a * (1 - b) * img[v1, u1 + 1]
+                    + (1 - a) * b * img[v1 + 1, u1]
+                    + a * b * img[v1 + 1, u1 + 1]
+                )
             else:
                 # [TODO] nearest neighbor
-
+                undistorted_img[y, x] = img[round(v), round(u)]
 
     return undistorted_img
